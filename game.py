@@ -638,17 +638,33 @@ class Game(object):
             dw.writeheader()
             print('Created new results file')
         """    
-        "Check if arff file exists, if yes than just append to it if no, than create"
-        # assign header columns 
+        
+        
+        "Check if arff file exists, if yes than just append to it if no, than create" 
         if path.exists("all_data_pacman.arff") is True:
             print('Results file exists')
             d=list(arff.load('all_data_pacman.arff'))
+            f=open("all_data_pacman2.arff")
             
         else:
             data=[]
             arff.dump('all_data_pacman.arff',data,relation="Example1", names=['PosX','PosY','isNorthLegal', 'isEastLegal','isSouthLegal', 'isWestLegal','Direction','Ghost1X','Ghost1Y','Ghost2X','Ghost2Y','Ghost3X','Ghost3Y','Ghost4X','Ghost4Y'])
             d=list(arff.load('all_data_pacman.arff'))
             print('Created new results file')
+            
+            """
+        if path.exists("all_data_pacman2.arff") is True:
+            print('Results file exists')
+            f=open("all_data_pacman2.arff","a")
+            d=list()
+        else:
+            f=open("all_data_pacman2.arff","a")
+            f.write("@relation Example1 \n@attribute PosX integer \n@attribute PosY integer \n@attribute isNorthLegal {True, False} \n@attribute isEastLegal {True, False} \n@attribute isSouthLegal {True, False} \n@attribute isWestLegal {True, False} \n@attribute Direction string \n@attribute Ghost1X integer \n@attribute Ghost1Y integer \n@attribute Ghost2X integer \n@attribute Ghost2Y integer \n@attribute Ghost3X integer \n@attribute Ghost3Y integer \n@attribute Ghost4X integer \n@attribute Ghost4Y integer \n@data")
+            #f.close()
+            #f=open("all_data_pacman2.arff","a")
+            d=list()
+            print('Created new results file')
+            """
         agentIndex = self.startingIndex
         numAgents = len( self.agents )
         step = 0
@@ -681,7 +697,11 @@ class Game(object):
                 self.unmute()
             else:
                 observation = self.state.deepCopy()
-                            
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Change it    
+            g=agent.printLineData(observation)
+            #g.append(agent.getAction(observation))
+            #g.append(self.state.getScore())
+            d.append(g)  
             # Solicit an action
             action = None
             step += 1
@@ -728,8 +748,8 @@ class Game(object):
                     return
             else:
                 action = agent.getAction(observation)
-            self.unmute()
 
+            self.unmute()
             # Execute the action
             self.moveHistory.append( (agentIndex, action) )
             if self.catchExceptions:
@@ -742,7 +762,7 @@ class Game(object):
                     return
             else:
                 self.state = self.state.generateSuccessor( agentIndex, action )
-
+                
             # Change the display
             self.display.update( self.state.data )
             ###idx = agentIndex - agentIndex % 2 + 1
@@ -758,16 +778,30 @@ class Game(object):
             if _BOINC_ENABLED:
                 boinc.set_fraction_done(self.getProgress())
             
-            g=KeyboardAgent.printLineData(self, observation)
-            d.append(g)
-            """      
+            
+            #g=BasicAgentAA.printLineData(self, observation)
+            #g.append(action)
+            #g.append(self.state.getScore())
+            #d.append(g)
+            #f.write("\n"+g)
+            #f.write(g)
+            #f.write("," + action)
+            #f.write(","+ str(self.state.getScore()))
+            """
+            g=BasicAgentAA().printLineData(self, observation)
+            f.append(g)
+            """
+        """
             #USE MY FUNCTION PRINT LINE FROM BASIC AGENT
             g=BasicAgentAA.printLineData(self, observation)
             "Writing results to file"
             spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             spamwriter.writerow(g)
             """
-        data=d    
+            
+            
+        data=d  
+        #f.write(data)
         arff.dump('all_data_pacman.arff',data,relation="Example1", names=['PosX','PosY','isNorthLegal', 'isEastLegal','isSouthLegal', 'isWestLegal','Direction','Ghost1X','Ghost1Y','Ghost2X','Ghost2Y','Ghost3X','Ghost3Y','Ghost4X','Ghost4Y'])    
         # inform a learning agent of the game result
         for agentIndex, agent in enumerate(self.agents):
@@ -781,4 +815,5 @@ class Game(object):
                     self._agentCrash(agentIndex)
                     self.unmute()
                     return
+        #f.close()
         self.display.finish()
