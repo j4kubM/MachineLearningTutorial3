@@ -12,12 +12,13 @@ from __future__ import print_function
 # Student side autograding was added by Brad Miller, Nick Hay, and
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
 
-
+from wekaI import Weka
 from builtins import range
 from builtins import object
 import util
 from game import Agent
 from game import Directions
+from game import Game
 from keyboardAgents import KeyboardAgent
 import inference
 import busters
@@ -263,47 +264,7 @@ class BasicAgentAA(BustersAgent):
         # Score
         print("Score: ", gameState.getScore())
         
-        
-        
-    def printLineData(self, gameState):
-            """Program a method called printLineData() inside the BasicAgentAA agent from the bustersAgents.py 
-                This method should return a string with the information from the Pac-Man state you consider relevant.
-                Then, you call this method from the main loop of the game in Game.py to write the information to a file
-                For each tick, you should store a line with all the considered information, splitting each data with commas.
-                Moreover, each time a new game starts, the new lines must be appended below the old ones. You should not
-                rewrite the file when a new game starts
-            """
-            pos=gameState.getPacmanPosition()
-            posX=str(pos[0])
-            posY=str(pos[1])
-            North=0
-            South=0
-            East=0
-            West=0
-            actions=gameState.getLegalPacmanActions() 
-            if 'North' in str(actions):
-                North=1
-            if 'East' in str(actions):
-                East=1
-            if 'West' in str(actions):
-                West=1
-            if 'South' in str(actions):
-                South=1
-            direction=str(gameState.data.agentStates[0].getDirection())
-            ghosts=gameState.getGhostPositions()
-            g1X=str(ghosts[0][0])
-            g1Y=str(ghosts[0][1])
-            g2X=str(ghosts[1][0])
-            g2Y=str(ghosts[1][1])
-            g3X=str(ghosts[2][0])
-            g3Y=str(ghosts[2][1])
-            g4X=str(ghosts[3][0])
-            g4Y=str(ghosts[3][1])
-            result=[posX, posY, North, East, South, West, direction, g1X, g1Y, g2X, g2Y, g3X, g3Y, g4X, g4Y ]
-            #print(result)
-            return result
-            
-            
+
     def chooseAction(self, gameState):
         self.countActions = self.countActions + 1
         self.printInfo(gameState)
@@ -317,5 +278,67 @@ class BasicAgentAA(BustersAgent):
         if   ( move_random == 3 ) and Directions.SOUTH in legal: move = Directions.SOUTH
         return move
 
-        
+    def printLineData(self, gameState):
+            """Program a method called printLineData() inside the BasicAgentAA agent from the bustersAgents.py 
+                This method should return a string with the information from the Pac-Man state you consider relevant.
+                Then, you call this method from the main loop of the game in Game.py to write the information to a file
+                For each tick, you should store a line with all the considered information, splitting each data with commas.
+                Moreover, each time a new game starts, the new lines must be appended below the old ones. You should not
+                rewrite the file when a new game starts
+            """
+            #Pacman's position
+            pos=gameState.getPacmanPosition()
+            #Pacman's postion at X axis
+            posX=pos[0]
+            #Pacman's postion at X axis
+            posY=pos[1]
+            North=0
+            South=0
+            East=0
+            West=0
+            #Checking which actions are legal
+            actions=gameState.getLegalPacmanActions() 
+            if 'North' in str(actions):
+                North=1
+            if 'East' in str(actions):
+                East=1
+            if 'West' in str(actions):
+                West=1
+            if 'South' in str(actions):
+                South=1
+            direction=gameState.data.agentStates[0].getDirection()
+            ghosts=gameState.getGhostPositions()
+            #Ghost1 informations about postion, distance
+            g1X=ghosts[0][0]
+            g1Y=ghosts[0][1]
+            g1Dis=gameState.data.ghostDistances[0]
+            #Ghost2 informations about postion, distance
+            g2X=ghosts[1][0]
+            g2Y=ghosts[1][1]
+            g2Dis=gameState.data.ghostDistances[1]
+            #Ghost3 informations about postion, distance
+            g3X=ghosts[2][0]
+            g3Y=ghosts[2][1]
+            g3Dis=gameState.data.ghostDistances[2]
+            #Ghost4 informations about postion, distance
+            g4X=ghosts[3][0]
+            g4Y=ghosts[3][1]
+            g4Dis=gameState.data.ghostDistances[3]
+            #Information about number of dots left
+            dotNum=gameState.getNumFood()
+            #Distance to nearest dot
+            dotDir=gameState.getDistanceNearestFood()
+            #Current score:
+            scoreCurrent=gameState.getScore()
+            #Future score (in next move):
+            #scoreNext='p'
+            #scoreNext=gameState.generateSuccessor(0,self.chooseAction(gameState))
+            #Action that Pac-Man has executed:
+            #actionPac=0
+            #Agent.getAction(gameState)
+            
+            result=[posX, posY, North, East, South, West, direction, g1X, g1Y, g1Dis, g2X, g2Y, g2Dis, g3X, g3Y,g3Dis, g4X, g4Y, g4Dis, dotNum, dotDir, scoreCurrent]
+            #print(result)
+            return result
+    
         
