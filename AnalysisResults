@@ -1,0 +1,9 @@
+Available resultsets
+(1) trees.J48 '-C 0.25 -M 2' -217733168393644444
+(2) lazy.IBk '-K 1 -W 0 -A \"weka.core.neighboursearch.LinearNNSearch -A \\\"weka.core.EuclideanDistance -R first-last\\\"\"' -3080186098777067172
+(3) rules.PART '-C 0.25 -M 2' 8121455039782598361
+(4) rules.ZeroR '' 48055541465867954
+(5) bayes.NaiveBayes '' 5995231201785697655
+
+
+
