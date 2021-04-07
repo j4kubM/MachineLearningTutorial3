@@ -639,7 +639,7 @@ class Game(object):
             print('Created new results file')
         """    
         
-        
+        """
         "Check if arff file exists, if yes than just append to it if no, than create" 
         if path.exists("all_data_pacman.arff") is True:
             print('Results file exists')
@@ -651,20 +651,20 @@ class Game(object):
             arff.dump('all_data_pacman.arff',data,relation="Example1", names=['PosX','PosY','isNorthLegal', 'isEastLegal','isSouthLegal', 'isWestLegal','Direction','Ghost1X','Ghost1Y','Ghost2X','Ghost2Y','Ghost3X','Ghost3Y','Ghost4X','Ghost4Y'])
             d=list(arff.load('all_data_pacman.arff'))
             print('Created new results file')
+         """  
             
-            """
-        if path.exists("all_data_pacman2.arff") is True:
+        if path.exists("all_data_pacman.arff") is True:
             print('Results file exists')
-            f=open("all_data_pacman2.arff","a")
+            f=open("all_data_pacman.arff","a")
             d=list()
         else:
-            f=open("all_data_pacman2.arff","a")
-            f.write("@relation Example1 \n@attribute PosX integer \n@attribute PosY integer \n@attribute isNorthLegal {True, False} \n@attribute isEastLegal {True, False} \n@attribute isSouthLegal {True, False} \n@attribute isWestLegal {True, False} \n@attribute Direction string \n@attribute Ghost1X integer \n@attribute Ghost1Y integer \n@attribute Ghost2X integer \n@attribute Ghost2Y integer \n@attribute Ghost3X integer \n@attribute Ghost3Y integer \n@attribute Ghost4X integer \n@attribute Ghost4Y integer \n@data")
+            f=open("all_data_pacman.arff","a")
+            f.write("@relation Example1 \n@attribute PosX numeric \n@attribute PosY numeric \n@attribute isNorthLegal {True, False} \n@attribute isEastLegal {True, False} \n@attribute isSouthLegal {True, False} \n@attribute isWestLegal {True, False} \n@attribute Direction {Stop, North, South, East, West} \n@attribute Ghost1X numeric \n@attribute Ghost1Y numeric \n@attribute Ghost2X numeric \n@attribute Ghost2Y numeric \n@attribute Ghost3X numeric \n@attribute Ghost3Y numeric \n@attribute Ghost4X numeric \n@attribute Ghost4Y numeric \n@attribute FutureScore numeric \n@attribute FutureDirection {Stop, North, South, East, West} \n@data \n" )
             #f.close()
             #f=open("all_data_pacman2.arff","a")
             d=list()
             print('Created new results file')
-            """
+        
         agentIndex = self.startingIndex
         numAgents = len( self.agents )
         step = 0
@@ -698,10 +698,17 @@ class Game(object):
             else:
                 observation = self.state.deepCopy()
             # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Change it    
-            g=agent.printLineData(observation)
+            if agentIndex==self.startingIndex:    
+                if step >=1:
+                    f.write(str(observation.getScore())+',')
+                    f.write(str(observation.data.agentStates[0].getDirection())+'\n')
+                g=BasicAgentAA.printLineData(self,observation)
+                if g:
+                    for i in g:
+                        f.write(str(i)+',')
             #g.append(agent.getAction(observation))
             #g.append(self.state.getScore())
-            d.append(g)  
+            #d.append(g)  
             # Solicit an action
             action = None
             step += 1
@@ -800,9 +807,9 @@ class Game(object):
             """
             
             
-        data=d  
+        #data=d  
         #f.write(data)
-        arff.dump('all_data_pacman.arff',data,relation="Example1", names=['PosX','PosY','isNorthLegal', 'isEastLegal','isSouthLegal', 'isWestLegal','Direction','Ghost1X','Ghost1Y','Ghost2X','Ghost2Y','Ghost3X','Ghost3Y','Ghost4X','Ghost4Y'])    
+        #arff.dump('all_data_pacman.arff',data,relation="Example1", names=['PosX','PosY','isNorthLegal', 'isEastLegal','isSouthLegal', 'isWestLegal','Direction','Ghost1X','Ghost1Y','Ghost2X','Ghost2Y','Ghost3X','Ghost3Y','Ghost4X','Ghost4Y'])    
         # inform a learning agent of the game result
         for agentIndex, agent in enumerate(self.agents):
             if "final" in dir( agent ) :
@@ -815,5 +822,6 @@ class Game(object):
                     self._agentCrash(agentIndex)
                     self.unmute()
                     return
-        #f.close()
+        f.write('\n')
+        f.close()
         self.display.finish()
