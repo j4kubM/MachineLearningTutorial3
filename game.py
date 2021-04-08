@@ -620,49 +620,17 @@ class Game(object):
         import os.path
         import arff
         from os import path
-        """
         
-        "Check if csv file exists, if yes than just open it, if no, than create"
-        # assign header columns 
-        headerList = ['PositionX', 'PositionY', 'is North legal', 'is East legal','is South legal', 'is West legal', 'is Stop legal','Direction', 'Position','Ghost1 X','Ghost1 Y','Ghost2 X','Ghost2 Y','Ghost3 X','Ghost3 Y','Ghost4 X','Ghost4 Y'] 
-        if path.exists("Results.csv") is True:
-            print('Results file exists')
-            csvfile=open('Results.csv', 'a', newline='')
-            spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            spamwriter.writerow(['','','','','','','',''])                
-        else:
-            # open CSV file and assign header 
-            csvfile=open("Results.csv", 'w') 
-            dw = csv.DictWriter(csvfile, delimiter=',',  
-                        fieldnames=headerList) 
-            dw.writeheader()
-            print('Created new results file')
-        """    
         
-        """
-        "Check if arff file exists, if yes than just append to it if no, than create" 
-        if path.exists("all_data_pacman.arff") is True:
-            print('Results file exists')
-            d=list(arff.load('all_data_pacman.arff'))
-            f=open("all_data_pacman2.arff")
-            
-        else:
-            data=[]
-            arff.dump('all_data_pacman.arff',data,relation="Example1", names=['PosX','PosY','isNorthLegal', 'isEastLegal','isSouthLegal', 'isWestLegal','Direction','Ghost1X','Ghost1Y','Ghost2X','Ghost2Y','Ghost3X','Ghost3Y','Ghost4X','Ghost4Y'])
-            d=list(arff.load('all_data_pacman.arff'))
-            print('Created new results file')
-         """  
-            
+        "Check if .arff file exists, if yes than just open it, if no, than create"
+                   
         if path.exists("all_data_pacman.arff") is True:
             print('Results file exists')
             f=open("all_data_pacman.arff","a")
             d=list()
         else:
-            f=open("all_data_pacman.arff","a")
-            f.write("@relation Example1 \n@attribute PosX numeric \n@attribute PosY numeric \n@attribute isNorthLegal {True, False} \n@attribute isEastLegal {True, False} \n@attribute isSouthLegal {True, False} \n@attribute isWestLegal {True, False} \n@attribute Direction {Stop, North, South, East, West} \n@attribute Ghost1X numeric \n@attribute Ghost1Y numeric \n@attribute Ghost2X numeric \n@attribute Ghost2Y numeric \n@attribute Ghost3X numeric \n@attribute Ghost3Y numeric \n@attribute Ghost4X numeric \n@attribute Ghost4Y numeric \n@attribute FutureScore numeric \n@attribute FutureDirection {Stop, North, South, East, West} \n@data \n" )
-            #f.close()
-            #f=open("all_data_pacman2.arff","a")
-            d=list()
+            f=open("all_data_pacman.arff","a")         
+            f.write("@relation Example1 \n@attribute PosX numeric \n@attribute PosY numeric \n@attribute isNorthLegal {True, False} \n@attribute isEastLegal {True, False} \n@attribute isSouthLegal {True, False} \n@attribute isWestLegal {True, False} \n@attribute Direction {Stop, North, South, East, West} \n@attribute Ghost1X numeric \n@attribute Ghost1Y numeric \n@attribute Ghost1Distance numeric \n@attribute Ghost2X numeric \n@attribute Ghost2Y numeric \n@attribute Ghost2Distance numeric \n@attribute Ghost3X numeric \n@attribute Ghost3Y numeric \n@attribute Ghost3Distance numeric \n@attribute Ghost4X numeric \n@attribute Ghost4Y numeric \n@attribute Ghost4Distance numeric \n@attribute FutureScore numeric \n@attribute NumberOfDots numeric \n@attribute NearestDotDistance numeric \n@attribute CurrentScore numeric \n@attribute FutureDirection {Stop, North, South, East, West} \n@data \n" )            
             print('Created new results file')
         
         agentIndex = self.startingIndex
@@ -705,10 +673,10 @@ class Game(object):
                 g=BasicAgentAA.printLineData(self,observation)
                 if g:
                     for i in g:
+                        if i==None:
+                            i='?'
                         f.write(str(i)+',')
-            #g.append(agent.getAction(observation))
-            #g.append(self.state.getScore())
-            #d.append(g)  
+              
             # Solicit an action
             action = None
             step += 1
@@ -786,31 +754,6 @@ class Game(object):
                 boinc.set_fraction_done(self.getProgress())
             
             
-            #g=BasicAgentAA.printLineData(self, observation)
-            #g.append(action)
-            #g.append(self.state.getScore())
-            #d.append(g)
-            #f.write("\n"+g)
-            #f.write(g)
-            #f.write("," + action)
-            #f.write(","+ str(self.state.getScore()))
-            """
-            g=BasicAgentAA().printLineData(self, observation)
-            f.append(g)
-            """
-        """
-            #USE MY FUNCTION PRINT LINE FROM BASIC AGENT
-            g=BasicAgentAA.printLineData(self, observation)
-            "Writing results to file"
-            spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            spamwriter.writerow(g)
-            """
-            
-            
-        #data=d  
-        #f.write(data)
-        #arff.dump('all_data_pacman.arff',data,relation="Example1", names=['PosX','PosY','isNorthLegal', 'isEastLegal','isSouthLegal', 'isWestLegal','Direction','Ghost1X','Ghost1Y','Ghost2X','Ghost2Y','Ghost3X','Ghost3Y','Ghost4X','Ghost4Y'])    
-        # inform a learning agent of the game result
         for agentIndex, agent in enumerate(self.agents):
             if "final" in dir( agent ) :
                 try:
@@ -822,6 +765,6 @@ class Game(object):
                     self._agentCrash(agentIndex)
                     self.unmute()
                     return
-        f.write('\n')
+        f.write("0"+','+'Stop'+'\n')
         f.close()
         self.display.finish()
