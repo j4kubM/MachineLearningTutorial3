@@ -17,11 +17,11 @@
 @attribute Ghost3Distance numeric 
 @attribute Ghost4X numeric 
 @attribute Ghost4Y numeric 
-@attribute Ghost4Distance numeric 
-@attribute FutureScore numeric 
+@attribute Ghost4Distance numeric  
 @attribute NumberOfDots numeric 
 @attribute NearestDotDistance numeric 
 @attribute CurrentScore numeric 
+@attribute FutureScore numeric 
 @attribute FutureDirection {Stop, North, South, East, West} 
 @data 
 12,10,True,True,True,True,Stop,5,6,11,5,12,9,13,6,5,13,12,3,1,7,0,-1,Stop
